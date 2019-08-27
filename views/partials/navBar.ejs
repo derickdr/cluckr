@@ -1,0 +1,12 @@
+<nav id='navbar'>
+    <a href='/'>Cluck!</a>
+
+    <% if(username) {%>
+        <%= username %>
+        <form>
+            <input type='submit' value='Sign Out'>
+        </form>
+    <% } else { %>
+        <a href='/sign_in'>Sign In</a>
+    <% } %>
+</nav>
