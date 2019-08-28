@@ -1,10 +1,10 @@
 
 exports.up = function(knex) {
     return knex.schema.createTable('clucks', table => {
-        table.increments('id');
-        table.text('username');
-        table.string('');
-        table.string('image_url');
+        table.increments('id').notNull();
+        table.text('username').notNull();
+        table.string('content').notNull();
+        table.string('image_url').nullable();
         table.timestamp('created_at').defaultTo(knex.fn.now());
         table.timestamp('last_updated');
     });

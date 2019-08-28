@@ -4,21 +4,18 @@ const express = require('express'),
     cookieParser = require('cookie-parser'),
     app = express(),
     knex = require('knex')({
-        host : 'localhost',
-    database : 'cluckr'
-      }),
+        client: 'pg',
+        connection: {
+            host : 'localhost',
+            database : 'cluckr'
+        },
+        useNullAsDefault: true,
+    }),
     dbConfig = require('knexfile'),
     client = knex(dbConfig.development),
     PORT = 6967,
     ADDRESS = 'localhost',
     COOKIE_MAX_AGE = 1000 * 60 * 60 * 24 * 7;
-
-// ----------
-
-/* Knex */
-
-// Exports client
-module.exports = client; // not sure if this is actually needed
 
 // ----------
 
@@ -50,12 +47,6 @@ app.set('view_engine', 'ejs');
 
 /* Initialize page */
 
-// Force landing page on initialize
-app.get('/', (req, res) => {
-    res.redirect('/welcome_landing');
-    res.render('welcome');
-});
-
 // Declare server initialization
 app.listen(ADDRESS, PORT, () => {
     console.log (`Express Server initialized on ${ADDRESS}:${PORT}`);
@@ -66,10 +57,18 @@ app.listen(ADDRESS, PORT, () => {
 /* Pages */
 
 app.get("/", (req, res) => {
-    res.render('clucks');
+    res.redirect('/clucks');
 });
 
 app.get("/clucks", (req, res) => {
+    let clucks = []
+    knex('clucks')
+        .select('*')
+        .then(data => {
+            console.log(data);
+            clucks.push(data);
+            knex.destroy();
+        });
     res.render('clucks');
 });
 
@@ -106,9 +105,17 @@ app.use(function(req, res, next) {
     next();
 });
 
-/* Clucking */
+/* Knex */
+
+// Exports client
+module.exports = client; // not sure if this is actually needed
 
 // New cluck
 app.post('/new_cluck', (req, res) => {
-    
+    knex.('clucks')
+    .insert({
+        username: res.locals.username,
+        content: res.locals.content,
+        image_url: res.locals.image_url,
+    });
 });
