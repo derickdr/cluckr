@@ -3,9 +3,22 @@ const express = require('express'),
     path = require('path'),
     cookieParser = require('cookie-parser'),
     app = express(),
+    knex = require('knex')({
+        host : 'localhost',
+    database : 'cluckr'
+      }),
+    dbConfig = require('knexfile'),
+    client = knex(dbConfig.development),
     PORT = 6967,
     ADDRESS = 'localhost',
     COOKIE_MAX_AGE = 1000 * 60 * 60 * 24 * 7;
+
+// ----------
+
+/* Knex */
+
+// Exports client
+module.exports = client; // not sure if this is actually needed
 
 // ----------
 
@@ -15,7 +28,7 @@ const express = require('express'),
 function getUser(req, res, next) {
     res.locals.username = req.cookies.username;
     next();
-}
+};
 
 // Initialize cookie parser
 app.use(cookieParser());
@@ -53,20 +66,24 @@ app.listen(ADDRESS, PORT, () => {
 /* Pages */
 
 app.get("/", (req, res) => {
-    res.render('contactUs');
+    res.render('clucks');
 });
 
-app.get("/contact_us", (req, res) => {
-    res.render('contactUs');
+app.get("/clucks", (req, res) => {
+    res.render('clucks');
 });
 
-app.get("/contact_us", (req, res) => {
-    res.render('contactUs');
+app.get("/sign_in", (req, res) => {
+    res.render('signIn');
+});
+
+app.get("/new_cluck", (req, res) => {
+    res.render('newCluck');
 });
 
 // ----------
 
-/* Signing in / out, prevent anonymous interaction */
+/* Signing in & out, prevent anonymous interaction */
 
 // Sign in
 app.post('/sign_in', (req, res) => {
@@ -84,9 +101,14 @@ app.post('/sign_out', (req, res) => {
 app.use(function(req, res, next) {
     const url = req.url;
     if(url === '/new_cluck') {
-        res.locals.username ? next() : res.redirect('/');
+        res.locals.username ? next() : res.redirect('/sign_in');
     }
     next();
 });
 
+/* Clucking */
 
+// New cluck
+app.post('/new_cluck', (req, res) => {
+    
+});

@@ -1,0 +1,11 @@
+<%- include("./partials/header") %>
+    <div>
+        <form action='/new_cluck' method='POST'>
+            <label for='content'>Content</label>
+            <input type='text' name='content' value='content' placeholder='Whatcha cluckin&#39 bout?'>
+            <label for='image_url'>Image URL</label>
+            <input type='url' name='image_url' placeholder='https://i.redd.it/03hlwhf2cni31.jpg'>
+            <input type='submit' value='Cluck!'>
+        </form>
+    </div>
+<%- include("partials/footer") %>
